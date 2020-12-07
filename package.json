@@ -1,0 +1,25 @@
+{
+  "name": "tinyapp",
+  "version": "1.0.0",
+  "description": "alllows users to shorten long URLs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Cglowicki/tinyapp.git"
+  },
+  "keywords": [
+    "fun",
+    "short",
+    "URL",
+    "tinyapp"
+  ],
+  "author": "Cam Glowicki",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Cglowicki/tinyapp/issues"
+  },
+  "homepage": "https://github.com/Cglowicki/tinyapp#readme"
+}
