@@ -47,10 +47,16 @@ app.get('/urls/new', (req, res) => {
 });
 
 // urls info 
+app.post('/urls/:shortURL/edit', (req, res) => {
+  const shortURL = req.params.shortURL;
+  res.redirect(`/urls/${shortURL}`);
+});
+
 app.post('/urls/:shortURL/delete', (req, res) => {
   delete urlDatabase[req.params.shortURL];
   res.redirect('/urls');
 });
+
 
 app.get('/urls/:shortURL', (req, res) => {
   const templateVars = { shortURL: req.params.shortURL, longURL: urlDatabase[req.params.shortURL] };
