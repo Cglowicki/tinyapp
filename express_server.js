@@ -6,7 +6,7 @@ app.set('view engine', 'ejs');
 
 const urlDatabase = {
   "b2xVn2": "http://www.lighthouselabs.ca",
-  "9sm5xK": "http://www.google.com"
+  "9sm5xK": "http://www.google.com" // for (let url in urls) --> 9sm5xK = url --> value is google.com (urls)
 };
 
 app.get('/', (req, res) => {
@@ -16,6 +16,11 @@ app.get('/', (req, res) => {
 app.get('/urls', (req, res) => {
   const templateVars = { urls: urlDatabase };
   res.render('urls_index', templateVars);
+});
+
+app.get('/urls/:shortURL', (req, res) => { //.get called route or route handler
+  const templateVars = { shortURL: req.params.shortURL, longURL: urlDatabase[req.params.shortURL] };
+  res.render('urls_show', templateVars);
 });
 
 app.get('/urls.json', (req, res) => {
