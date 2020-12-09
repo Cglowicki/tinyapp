@@ -1,0 +1,40 @@
+<link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<!------ Include the above in your HEAD tag ---------->
+<header>
+  <div>
+    <nav class="navbar navbar-expand-md navbar-dark bg-primary">
+      <a class="navbar-brand" href="/urls">TinyApp</a> <!-- maybe no href-->
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup"
+        aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+  </div>
+  <div class="container register-form">
+    <div class="form">
+      <div class="note">
+        <p>
+        <h3><b>Register with TinyApp now!</b></h3>
+        </p>
+      </div>
+      <form method='POST' action='/register'>
+        <div class="form-content">
+
+          <div class="col-md-6">
+            <div class="form-group">
+              <input type="email" name='email' class="form-control" placeholder="Your Email" value="" />
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="form-group">
+              <input type="password" name="password" class="form-control" placeholder="Your Password" value="" />
+            </div>
+
+          </div>
+        </div>
+        <button type="submit" class="btn btn-success">Submit</button>
+      </form>
+    </div>
+
+  </div>
