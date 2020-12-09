@@ -42,11 +42,12 @@ app.post('/urls', (req, res) => {
 });
 
 // new urls functionality
+
+// urls info 
 app.get('/urls/new', (req, res) => {
   res.render('urls_new');
 });
 
-// urls info 
 app.post('/urls/:shortURL/edit', (req, res) => {
   const shortURL = req.params.shortURL;
   res.redirect(`/urls/${shortURL}`);
@@ -57,12 +58,17 @@ app.post('/urls/:shortURL/delete', (req, res) => {
   res.redirect('/urls');
 });
 
+app.post('/urls/:id', (req, res) => { 
+  const newLongURL = req.body.longURL;
+  const shortURL = req.params.id;
+  urlDatabase[shortURL] = newLongURL;
+  res.redirect('/urls');
+});
 
 app.get('/urls/:shortURL', (req, res) => {
   const templateVars = { shortURL: req.params.shortURL, longURL: urlDatabase[req.params.shortURL] };
   res.render('urls_show', templateVars);
 });
-
 
 app.get('/u/:shortURL', (req, res) => {
   const longURL = urlDatabase[req.params.shortURL];
