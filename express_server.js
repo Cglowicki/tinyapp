@@ -1,11 +1,18 @@
+// setup
 const express = require('express');
 const app = express();
 const PORT = 8080;
 const dataHelpers = require('./dataHelpers.js');
 
-// body parser
+// middleware
 const bodyParser = require('body-parser');
 app.use(bodyParser.urlencoded({extended: true}));
+
+const morgan = require('morgan');
+app.use(morgan('dev'));
+
+const cookieParser = require('cookie-parser');
+app.use(cookieParser());
 
 // set view engine
 app.set('view engine', 'ejs');
@@ -30,8 +37,12 @@ app.get('/hello', (req, res) => {
 });
 
 // urls list
-app.get('/urls', (req, res) => {
-  const templateVars = { urls: urlDatabase };
+app.get('/urls', (req, res) => { // check USERNAME!!!
+  const templateVars = { 
+    username: req.cookies['username'],
+    urls: urlDatabase
+  }
+  console.log(req.cookies);
   res.render('urls_index', templateVars);
 });
 
@@ -44,9 +55,23 @@ app.post('/urls', (req, res) => {
 // new urls functionality
 
 // urls info 
-app.get('/urls/new', (req, res) => {
-  res.render('urls_new');
+app.post('/login', (req, res) =>{ // check USERNAME!!!
+  res.cookie('username', req.body.username);
+  res.redirect('/urls');
 });
+
+app.post('/logout', (req, res) => {
+  res.clearCookie('username');
+  res.redirect('/urls');
+});
+
+app.get('/urls/new', (req, res) => {
+  const templateVars = { 
+    username: req.cookies['username']
+  }
+  res.render('urls_new', templateVars);
+});
+
 
 app.post('/urls/:shortURL/edit', (req, res) => {
   const shortURL = req.params.shortURL;
@@ -65,8 +90,12 @@ app.post('/urls/:id', (req, res) => {
   res.redirect('/urls');
 });
 
-app.get('/urls/:shortURL', (req, res) => {
-  const templateVars = { shortURL: req.params.shortURL, longURL: urlDatabase[req.params.shortURL] };
+app.get('/urls/:shortURL', (req, res) => { // check USERNAME!!!
+  const templateVars = { 
+    username: req.cookies['username'],
+    shortURL: req.params.shortURL,
+    longURL: urlDatabase[req.params.shortURL]
+  }
   res.render('urls_show', templateVars);
 });
 
@@ -78,3 +107,4 @@ app.get('/u/:shortURL', (req, res) => {
 app.get('/urls.json', (req, res) => {
   res.json(urlDatabase);
 });
+
