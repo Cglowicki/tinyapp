@@ -4,7 +4,10 @@ const app = express();
 const PORT = 8080;
 const dataHelpers = require('./dataHelpers.js');
 
+
 // middleware
+const bcrypt = require('bcrypt');
+
 const bodyParser = require('body-parser');
 app.use(bodyParser.urlencoded({extended: true}));
 
@@ -20,16 +23,17 @@ app.listen(PORT, () => {
   console.log(`The app is listening on port ${PORT}...`)
 });
 
+//database info
 const users = {
   "84Yu54": {
     id: "84Yu54",
     email: "shababa@cat.com",
-    password: "shababa"
+    password: "shababa" //bcrypt
   },
   "OnF68t": {
     id: "OnF68t",
     email: "maisy@cat.com",
-    password: "maisy"
+    password: "maisy" //bcrypt
   }
 };
 
@@ -38,6 +42,7 @@ const urlDatabase = {
   "9sm5xK": "http://www.google.com" // for (let url in urls) --> 9sm5xK = url --> value is google.com (urls)
 };
 
+//route handlers
 app.get('/', (req, res) => {
   const id = req.cookies['id'];
   const user = users[id];
@@ -118,11 +123,11 @@ app.post('/urls', (req, res) => {
   res.redirect(`urls/${shortURL}`);
 });
 
-app.post('/register', (req, res) => {  // some stuff
+app.post('/register', (req, res) => {  // some stuff for error messages
   
   const id = dataHelpers.generateRandomString();
   const email = req.body.email;
-  const password = req.body.password;
+  const password = req.body.password; //bcrypt
 
   if (dataHelpers.emailLookup(email, users)) {
     return res.status(400).send('Hmm... Looks like that email has been registered');
@@ -130,21 +135,23 @@ app.post('/register', (req, res) => {  // some stuff
   if (email === '' || password === '') {
     return res.status(400).send('Whoops! One or more fields was left blank...');
   }
-  /* if (email !== users[user].email || password !== users[user].password) { // check!
-    return res.status(400).send('Whoops! Wrong user email or password');
-  } */
   
   users[id] =  { id, email, password };
   res.cookie('id', id);
   res.redirect('/urls');
 });
 
-app.post('/login', (req, res) => {
-  
-  const email = req.body.email;
-  const id = dataHelpers.emailLookup(email, users);
+app.post('/login', (req, res) => { //implement pass auth
 
-  res.cookie('id', id);
+  const password = req.body.password;
+  const email = req.body.email;
+  const userInfo = dataHelpers.emailLookup(email, users);
+
+  if (users[userInfo].password !== password) {
+    return res.status(401).send('Wrong email or password, try again.');
+  };
+
+  res.cookie('id', userInfo);
   res.redirect('/urls');
 });
 
