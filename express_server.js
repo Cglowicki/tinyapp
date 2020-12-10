@@ -15,6 +15,7 @@ const morgan = require('morgan');
 app.use(morgan('dev'));
 
 const cookieParser = require('cookie-parser');
+const { userURL } = require('./dataHelpers.js');
 app.use(cookieParser());
 
 app.set('view engine', 'ejs');
@@ -38,8 +39,8 @@ const users = {
 };
 
 const urlDatabase = {
-  "b2xVn2": "http://www.lighthouselabs.ca",
-  "9sm5xK": "http://www.google.com" // for (let url in urls) --> 9sm5xK = url --> value is google.com (urls)
+  "b2xVn2": { longURL: "http://www.lighthouselabs.ca", userID: "84Yu54" }, 
+  "9sm5xK": { longURL: "http://www.google.com", userID: "OnF68t" }
 };
 
 //route handlers
@@ -54,11 +55,12 @@ app.get('/urls', (req, res) => {
 
   const id = req.cookies['id'];
   const user = users[id];
+  const myURLS = userURL(id, urlDatabase);
 
   const templateVars = { 
     user,
-    urls: urlDatabase
-  }
+    urls: myURLS
+  };
   
   res.render('urls_index', templateVars);
 });
@@ -90,6 +92,11 @@ app.get('/urls/new', (req, res) => {
     
   const id = req.cookies['id'];
   const user = users[id];
+
+  if (id === undefined) {
+    res.redirect('/login');
+  };
+
   const templateVars = { user };
   res.render('urls_new', templateVars);
 });
@@ -176,6 +183,5 @@ app.post('/urls/:id', (req, res) => {
   urlDatabase[shortURL] = newLongURL;
   res.redirect('/urls');
 });
-
 
 //<div class="navbar-nav">
