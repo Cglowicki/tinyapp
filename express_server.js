@@ -14,6 +14,12 @@ app.use(bodyParser.urlencoded({extended: true}));
 const morgan = require('morgan');
 app.use(morgan('dev'));
 
+const cookieSession = require('cookie-session');
+app.use(cookieSession({
+  name: 'session',
+  keys: ['onekey']
+}));
+
 const cookieParser = require('cookie-parser');
 const { userURL } = require('./dataHelpers.js');
 app.use(cookieParser());
@@ -140,31 +146,34 @@ app.post('/register', (req, res) => {  // some stuff for error messages
 
   const email = req.body.email;
   const password = req.body.password; //bcrypt
+  const hashPass = bcrypt.hashSync(password, 2);
 
   if (dataHelpers.emailLookup(email, users)) {
     return res.status(400).send('Hmm... Looks like that email has been registered');
   }
-  if (email === '' || password === '') {
+  if (email === '' || password === '') { //may not be nothing with hash!!!!!!!!!!!
     return res.status(400).send('Whoops! One or more fields was left blank...');
   }
   
-  users[id] =  { id, email, password };
+  users[id] =  { id, email, password: hashPass };
   res.cookie('id', id);
   res.redirect('/urls');
 });
 
 app.post('/login', (req, res) => {
 
-  const password = req.body.password;
+  const password = req.body.password; //bcrypt
+  
   const email = req.body.email;
   const userInfo = dataHelpers.emailLookup(email, users);
-
-  if (users[userInfo].password !== password) {
+  
+  console.log('HERE', userInfo);
+  if (bcrypt.compareSync(password, userInfo.password)) {
+    res.cookie('id', userInfo.id);
+    res.redirect('/urls');
+  } else {
     return res.status(401).send('Wrong email or password, try again.');
-  };
-
-  res.cookie('id', userInfo);
-  res.redirect('/urls');
+  }
 });
 
 app.post('/logout', (req, res) => {
