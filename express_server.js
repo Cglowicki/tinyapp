@@ -39,7 +39,10 @@ const urlDatabase = {
 };
 
 app.get('/', (req, res) => {
-  res.send('Hello there, and welcome!');
+  const id = req.cookies['id'];
+  const user = users[id];
+  const templateVars = { user }
+  res.render('homepage', templateVars);
 });
 
 app.get('/hello', (req, res) => {
@@ -126,10 +129,13 @@ app.post('/register', (req, res) => {
   const password = req.body.password;
 
   if (dataHelpers.emailLookup(email, users)) {
-    return res.status(400).send('Looks like that email has been registered');
+    return res.status(400).send('Hmm... Looks like that email has been registered');
   }
   if (email === '' || password === '') {
     return res.status(400).send('Whoops! One or more fields was left blank...');
+  }
+  if (email !== users[user].email || password !== users[user].password) { // check!
+    return res.status(400).send('Whoops! Wrong user email or password');
   }
   
   users[id] =  { id, email, password };
