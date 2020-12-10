@@ -45,10 +45,6 @@ app.get('/', (req, res) => {
   res.render('homepage', templateVars);
 });
 
-app.get('/hello', (req, res) => {
-  res.send('<html><body>Hello <b>World!</b></body></html>\n');
-});
-
 app.get('/urls', (req, res) => {
 
   const id = req.cookies['id'];
@@ -122,7 +118,7 @@ app.post('/urls', (req, res) => {
   res.redirect(`urls/${shortURL}`);
 });
 
-app.post('/register', (req, res) => {  
+app.post('/register', (req, res) => {  // some stuff
   
   const id = dataHelpers.generateRandomString();
   const email = req.body.email;
@@ -134,9 +130,9 @@ app.post('/register', (req, res) => {
   if (email === '' || password === '') {
     return res.status(400).send('Whoops! One or more fields was left blank...');
   }
-  if (email !== users[user].email || password !== users[user].password) { // check!
+  /* if (email !== users[user].email || password !== users[user].password) { // check!
     return res.status(400).send('Whoops! Wrong user email or password');
-  }
+  } */
   
   users[id] =  { id, email, password };
   res.cookie('id', id);
