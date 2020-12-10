@@ -14,10 +14,8 @@ app.use(morgan('dev'));
 const cookieParser = require('cookie-parser');
 app.use(cookieParser());
 
-// set view engine
 app.set('view engine', 'ejs');
 
-// port and database info
 app.listen(PORT, () => {
   console.log(`The app is listening on port ${PORT}...`)
 });
@@ -75,6 +73,23 @@ app.get('/register', (req, res) => {
   res.render('register', templateVars);
 });
 
+app.get('/login', (req, res) => {
+  const id = req.cookies['id'];
+  const user = users[id];
+  const templateVars = { user };
+  
+  res.render('login', templateVars);
+  //res.redirect('/urls');
+});
+
+app.get('/urls/new', (req, res) => {
+    
+  const id = req.cookies['id'];
+  const user = users[id];
+  const templateVars = { user };
+  res.render('urls_new', templateVars);
+});
+
 app.get('/urls/:shortURL', (req, res) => {
 
   const id = req.cookies['id'];
@@ -104,7 +119,7 @@ app.post('/urls', (req, res) => {
   res.redirect(`urls/${shortURL}`);
 });
 
-app.post('/register', (req, res) => {  //for (let userID of Object.keys(users)) // users[usersID].email
+app.post('/register', (req, res) => {  
   
   const id = dataHelpers.generateRandomString();
   const email = req.body.email;
@@ -123,24 +138,17 @@ app.post('/register', (req, res) => {  //for (let userID of Object.keys(users)) 
 });
 
 app.post('/login', (req, res) => {
+  
+  const email = req.body.email;
+  const id = dataHelpers.emailLookup(email, users);
+
   res.cookie('id', id);
-
-//check pass
-
   res.redirect('/urls');
 });
 
 app.post('/logout', (req, res) => {
   res.clearCookie('id');
   res.redirect('/urls');
-});
-
-app.get('/urls/new', (req, res) => {
-
-  const id = req.cookies['id'];
-  const user = users[id];
-  const templateVars = { user };
-  res.render('urls_new', templateVars);
 });
 
 app.post('/urls/:shortURL/edit', (req, res) => {
@@ -161,3 +169,4 @@ app.post('/urls/:id', (req, res) => {
 });
 
 
+//<div class="navbar-nav">
