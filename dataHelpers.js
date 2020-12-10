@@ -12,16 +12,10 @@ const generateRandomString = function() {
 const emailLookup = function(email, users) {
   for (let user in users) {
     if (users[user].email === email) {
-      return user;
+      return users[user];
     }
   }
 };
-
-//addUserObject(userID)
-// contains {}
-// loops through database
-  // finds userID of loggedIn
-  // equals adds {shortURL, longURL}
 
 const userURL = function(id, urlDatabase) {
   let urlPair = {};
