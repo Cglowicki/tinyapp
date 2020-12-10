@@ -10,7 +10,6 @@ const generateRandomString = function() {
 };
 
 const emailLookup = function(email, users) {
-    
   for (let user in users) {
     if (users[user].email === email) {
       return user;
