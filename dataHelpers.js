@@ -17,4 +17,21 @@ const emailLookup = function(email, users) {
   }
 };
 
-module.exports = { generateRandomString, emailLookup };
+//addUserObject(userID)
+// contains {}
+// loops through database
+  // finds userID of loggedIn
+  // equals adds {shortURL, longURL}
+
+const userURL = function(id, urlDatabase) {
+  let urlPair = {};
+
+  for (let url in urlDatabase) {
+    if (urlDatabase[url].userID === id) {
+      urlPair[url] = urlDatabase[url].longURL;
+    }
+  return urlPair;
+  }
+};
+
+module.exports = { generateRandomString, emailLookup, userURL };
