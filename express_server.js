@@ -21,8 +21,8 @@ app.use(cookieSession({
 }));
 
 const cookieParser = require('cookie-parser');
-const { userURL } = require('./dataHelpers.js');
 app.use(cookieParser());
+const { userURL } = require('./dataHelpers.js');
 
 app.set('view engine', 'ejs');
 
@@ -167,7 +167,6 @@ app.post('/login', (req, res) => {
   const email = req.body.email;
   const userInfo = dataHelpers.emailLookup(email, users);
   
-  console.log('HERE', userInfo);
   if (bcrypt.compareSync(password, userInfo.password)) {
     res.cookie('id', userInfo.id);
     res.redirect('/urls');
