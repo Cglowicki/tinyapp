@@ -1,5 +1,5 @@
 // generate UID
-function generateRandomString() {
+const generateRandomString = function() {
   let result = '';
   const possibleChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
   const possibleCharsLength = possibleChars.length;
@@ -9,4 +9,13 @@ function generateRandomString() {
   return result;
 };
 
-module.exports = { generateRandomString };
+const emailLookup = function(email, users) {
+    
+  for (let user in users) {
+    if (users[user].email === email) {
+      return user;
+    }
+  }
+};
+
+module.exports = { generateRandomString, emailLookup };
