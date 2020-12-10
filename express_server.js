@@ -29,12 +29,12 @@ const users = {
   "84Yu54": {
     id: "84Yu54",
     email: "shababa@cat.com",
-    password: "shababa" //bcrypt
+    password: bcrypt.hashSync("shababa", 2)
   },
   "OnF68t": {
     id: "OnF68t",
     email: "maisy@cat.com",
-    password: "maisy" //bcrypt
+    password: bcrypt.hashSync("maisy", 2)
   }
 };
 
@@ -45,6 +45,7 @@ const urlDatabase = {
 
 //route handlers
 app.get('/', (req, res) => {
+
   const id = req.cookies['id'];
   const user = users[id];
   const templateVars = { user }
@@ -74,18 +75,18 @@ app.get('/register', (req, res) => {
     user,
     shortURL: req.params.shortURL,
     longURL: urlDatabase[req.params.shortURL]
-  }
+  };
 
   res.render('register', templateVars);
 });
 
 app.get('/login', (req, res) => {
+
   const id = req.cookies['id'];
   const user = users[id];
   const templateVars = { user };
   
   res.render('login', templateVars);
-  //res.redirect('/urls');
 });
 
 app.get('/urls/new', (req, res) => {
@@ -116,15 +117,18 @@ app.get('/urls/:shortURL', (req, res) => {
 });
 
 app.get('/u/:shortURL', (req, res) => {
+
   const longURL = urlDatabase[req.params.shortURL];
   res.redirect(longURL);
 });
 
 app.get('/urls.json', (req, res) => {
+
   res.json(urlDatabase);
 });
 
 app.post('/urls', (req, res) => { 
+
   let shortURL = dataHelpers.generateRandomString();
   urlDatabase[shortURL] = req.body.longURL;
   res.redirect(`urls/${shortURL}`);
@@ -133,6 +137,7 @@ app.post('/urls', (req, res) => {
 app.post('/register', (req, res) => {  // some stuff for error messages
   
   const id = dataHelpers.generateRandomString();
+
   const email = req.body.email;
   const password = req.body.password; //bcrypt
 
@@ -148,7 +153,7 @@ app.post('/register', (req, res) => {  // some stuff for error messages
   res.redirect('/urls');
 });
 
-app.post('/login', (req, res) => { //implement pass auth
+app.post('/login', (req, res) => {
 
   const password = req.body.password;
   const email = req.body.email;
@@ -163,25 +168,27 @@ app.post('/login', (req, res) => { //implement pass auth
 });
 
 app.post('/logout', (req, res) => {
+
   res.clearCookie('id');
   res.redirect('/urls');
 });
 
 app.post('/urls/:shortURL/edit', (req, res) => {
+
   const shortURL = req.params.shortURL;
   res.redirect(`/urls/${shortURL}`);
 });
 
 app.post('/urls/:shortURL/delete', (req, res) => {
+
   delete urlDatabase[req.params.shortURL];
   res.redirect('/urls');
 });
 
 app.post('/urls/:id', (req, res) => {
+
   const newLongURL = req.body.longURL;
   const shortURL = req.params.id;
   urlDatabase[shortURL] = newLongURL;
   res.redirect('/urls');
 });
-
-//<div class="navbar-nav">
