@@ -5,7 +5,6 @@
   <%- include('partials/_header') %>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-
   <!-- Bootstrap CSS -->
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"
     integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
@@ -24,24 +23,23 @@
         </tr>
       </thead>
       <% } else { %>
-        <table class="table">
-          <thead>
-            <tr>
-              <th scope="col">Short URL</th>
-              <th scope="col">Long URL</th>
-              <th scope="col">Edit</th>
-              <th scope="col">Delete</th>
-            </tr>
-          </thead>
-          <% } %>
-      <tbody>
-        <% for(let url in urls) { %>
-        <tr>
-          <td><%= url %></td>
-          <td><%= urls[url].longURL %></td>
-          <% if (user === undefined) { %>
-
-          <% } else { %>
+      <table class="table">
+        <thead>
+          <tr>
+            <th scope="col">Short URL</th>
+            <th scope="col">Long URL</th>
+            <th scope="col">Edit</th>
+            <th scope="col">Delete</th>
+          </tr>
+        </thead>
+        <% } %>
+        <tbody>
+          <% for(let url in urls) { %>
+          <tr>
+            <td><%= url %></td>
+            <td><%= urls[url].longURL %></td>
+            <% if (user === undefined) { %>
+            <% } else { %>
             <td>
               <form method="POST" action="/urls/<%= url %>/edit">
                 <input type="submit" class='btn btn-primary' value="Edit" />
@@ -53,10 +51,10 @@
               </form>
             </td>
             <% } %>
-        </tr>
-        <% } %>
-      </tbody>
-    </table>
+          </tr>
+          <% } %>
+        </tbody>
+      </table>
   </main>
   <!-- Bootstrap JS -->
   <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
