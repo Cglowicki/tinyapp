@@ -20,9 +20,6 @@ app.use(cookieSession({
   keys: ['onekey']
 }));
 
-// const cookieParser = require('cookie-parser');
-// app.use(cookieParser());
-
 app.set('view engine', 'ejs');
 
 app.listen(PORT, () => {
