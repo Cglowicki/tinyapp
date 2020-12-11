@@ -20,13 +20,13 @@ const emailLookup = function(email, users) {
 const userURL = function(id, urlDatabase) {
   
   let urlPair = {};
-
+  
   for (let url in urlDatabase) {
-    if (urlDatabase[url].userID === id) {
-      urlPair[url] = urlDatabase[url].longURL;
-    }
-  return urlPair;
+    if (urlDatabase[url].userID == id) {
+      urlPair[url] = { longURL: urlDatabase[url].longURL, userID: id };
+    };
   }
+  return urlPair;
 };
 
 module.exports = { generateRandomString, emailLookup, userURL };
