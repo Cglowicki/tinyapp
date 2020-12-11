@@ -3,7 +3,7 @@ const express = require('express');
 const app = express();
 const PORT = 8080;
 const dataHelpers = require('./dataHelpers.js');
-
+const { userURL } = require('./dataHelpers.js');
 
 // middleware
 const bcrypt = require('bcrypt');
@@ -20,9 +20,8 @@ app.use(cookieSession({
   keys: ['onekey']
 }));
 
-const cookieParser = require('cookie-parser');
-app.use(cookieParser());
-const { userURL } = require('./dataHelpers.js');
+// const cookieParser = require('cookie-parser');
+// app.use(cookieParser());
 
 app.set('view engine', 'ejs');
 
@@ -52,7 +51,7 @@ const urlDatabase = {
 //route handlers
 app.get('/', (req, res) => {
 
-  const id = req.cookies['id'];
+  const id = req.session['id'];
   const user = users[id];
   const templateVars = { user }
   res.render('homepage', templateVars);
@@ -60,10 +59,10 @@ app.get('/', (req, res) => {
 
 app.get('/urls', (req, res) => {
 
-  const id = req.cookies['id'];
+  const id = req.session['id'];
   const user = users[id];
   const myURLS = userURL(id, urlDatabase);
-
+  console.log('MY URLS!!', myURLS);
   const templateVars = { 
     user,
     urls: myURLS
@@ -74,7 +73,7 @@ app.get('/urls', (req, res) => {
 
 app.get('/register', (req, res) => {
 
-  const id = req.cookies['id'];
+  const id = req.session['id'];
   const user = users[id];
 
   const templateVars = { 
@@ -88,7 +87,7 @@ app.get('/register', (req, res) => {
 
 app.get('/login', (req, res) => {
 
-  const id = req.cookies['id'];
+  const id = req.session['id'];
   const user = users[id];
   const templateVars = { user };
   
@@ -97,7 +96,7 @@ app.get('/login', (req, res) => {
 
 app.get('/urls/new', (req, res) => {
     
-  const id = req.cookies['id'];
+  const id = req.session['id'];
   const user = users[id];
 
   if (id === undefined) {
@@ -110,21 +109,21 @@ app.get('/urls/new', (req, res) => {
 
 app.get('/urls/:shortURL', (req, res) => {
 
-  const id = req.cookies['id'];
+  const id = req.session['id'];
   const user = users[id];
 
   const templateVars = { 
     user,
     shortURL: req.params.shortURL,
-    longURL: urlDatabase[req.params.shortURL]
-  }
+    longURL: urlDatabase[req.params.shortURL].longURL
+  };
 
   res.render('urls_show', templateVars);
 });
 
 app.get('/u/:shortURL', (req, res) => {
 
-  const longURL = urlDatabase[req.params.shortURL];
+  const longURL = urlDatabase[req.params.shortURL].longURL;
   res.redirect(longURL);
 });
 
@@ -135,8 +134,11 @@ app.get('/urls.json', (req, res) => {
 
 app.post('/urls', (req, res) => { 
 
-  let shortURL = dataHelpers.generateRandomString();
-  urlDatabase[shortURL] = req.body.longURL;
+  const userID = req.session['id'];
+  const longURL = req.body.longURL
+  const shortURL = dataHelpers.generateRandomString();
+  urlDatabase[shortURL] = {longURL, userID};
+  
   res.redirect(`urls/${shortURL}`);
 });
 
@@ -156,7 +158,7 @@ app.post('/register', (req, res) => {  // some stuff for error messages
   }
   
   users[id] =  { id, email, password: hashPass };
-  res.cookie('id', id);
+  req.session.id = id; // HERE
   res.redirect('/urls');
 });
 
@@ -168,7 +170,7 @@ app.post('/login', (req, res) => {
   const userInfo = dataHelpers.emailLookup(email, users);
   
   if (bcrypt.compareSync(password, userInfo.password)) {
-    res.cookie('id', userInfo.id);
+    req.session.id = userInfo.id; // AND HERE
     res.redirect('/urls');
   } else {
     return res.status(401).send('Wrong email or password, try again.');
@@ -177,7 +179,7 @@ app.post('/login', (req, res) => {
 
 app.post('/logout', (req, res) => {
 
-  res.clearCookie('id');
+  req.session = null;
   res.redirect('/urls');
 });
 
