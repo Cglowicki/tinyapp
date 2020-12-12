@@ -108,6 +108,10 @@ app.get('/urls/:shortURL', (req, res) => {
 
   const id = req.session['id'];
   const user = users[id];
+    // only logged in users have permission
+    if (id === undefined) {
+      res.redirect('/login');
+    }
 
   const templateVars = {
     user,
@@ -181,6 +185,14 @@ app.post('/logout', (req, res) => {
 // logout redirects to homepage
   req.session = null;
   res.redirect('/');
+});
+
+app.post('/urls/:shortURL', (req, res) => {
+
+  const shortURL = req.params.shortURL;
+  const longURL = req.body.longURL;
+  urlDatabase[shortURL].longURL = longURL;
+  res.redirect(`/urls`);
 });
 
 app.post('/urls/:shortURL/edit', (req, res) => {
